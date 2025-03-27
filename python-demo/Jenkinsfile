@@ -23,7 +23,9 @@ pipeline {
                 sh '''
                 echo "Running tests..."
                 ls -R  # List directory structure for debugging
-                python3 -m unittest discover -s tests -p "test_*.py"
+                
+                # Run tests without requiring __init__.py
+                PYTHONPATH=$(pwd)/python-demo python3 -m unittest discover -s python-demo/tests -p "test_*.py"
                 '''
             }
         }
@@ -33,7 +35,7 @@ pipeline {
                 sh '''
                 echo "Building the project..."
                 mkdir -p build
-                cp -r src/* build/
+                cp -r python-demo/src/* build/
                 '''
             }
         }
