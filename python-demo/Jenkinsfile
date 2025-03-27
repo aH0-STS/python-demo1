@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/arjunkoppineni/python-demo.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'python -m unittest discover tests'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mkdir -p build && cp -r src/* build/'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                sh 'tar -czf python-demo.tar.gz build'
+                archiveArtifacts artifacts: 'python-demo.tar.gz', fingerprint: true
+            }
+        }
+    }
+}
