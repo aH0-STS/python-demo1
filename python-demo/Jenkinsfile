@@ -4,31 +4,31 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/arjunkoppineni/python-demo.git'
+                git branch: 'main', repository: 'https://github.com/arjunkoppineni/python-demo.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'cd $WORKSPACE && pip install -r requirements.txt'
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'cd $WORKSPACE && python -m unittest discover tests'
+                sh 'python -m unittest discover tests'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'cd $WORKSPACE && mkdir -p build && cp -r src/* build/'
+                sh 'mkdir -p build && cp -r src/* build/'
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                sh 'cd $WORKSPACE && tar -czf python-demo.tar.gz build'
+                sh 'tar -czf python-demo.tar.gz build'
                 archiveArtifacts artifacts: 'python-demo.tar.gz', fingerprint: true
             }
         }
