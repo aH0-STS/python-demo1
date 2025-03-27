@@ -10,25 +10,40 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r python-demo/requirements.txt'
+                sh '''
+                echo "Current directory: $(pwd)"
+                python3 -m pip install --upgrade pip
+                python3 -m pip install -r python-demo/requirements.txt
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'python3 -m unittest discover tests'
+                sh '''
+                echo "Running tests..."
+                ls -R  # List directory structure for debugging
+                python3 -m unittest discover -s tests -p "test_*.py"
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mkdir -p build && cp -r src/* build/'
+                sh '''
+                echo "Building the project..."
+                mkdir -p build
+                cp -r src/* build/
+                '''
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                sh 'tar -czf python-demo.tar.gz build'
+                sh '''
+                echo "Archiving artifacts..."
+                tar -czf python-demo.tar.gz -C build .
+                '''
                 archiveArtifacts artifacts: 'python-demo.tar.gz', fingerprint: true
             }
         }
