@@ -10,25 +10,25 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'cd $WORKSPACE && pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'python -m unittest discover tests'
+                sh 'cd $WORKSPACE && python -m unittest discover tests'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mkdir -p build && cp -r src/* build/'
+                sh 'cd $WORKSPACE && mkdir -p build && cp -r src/* build/'
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                sh 'tar -czf python-demo.tar.gz build'
+                sh 'cd $WORKSPACE && tar -czf python-demo.tar.gz build'
                 archiveArtifacts artifacts: 'python-demo.tar.gz', fingerprint: true
             }
         }
